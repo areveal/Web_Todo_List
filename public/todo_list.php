@@ -6,9 +6,12 @@
 <body>
 	<h1>TODO List</h1>
 	<ul>
-		<li>Take out the trash</li>
-		<li>Wash the car</li>
-		<li>Clean your room</li>
+		<?php 
+			$todos = ['Take out the trash', 'Mow the lawn', 'Wash the dog', 'Run'];
+			foreach ($todos as $todo) {
+				echo "<li>$todo</li>\n";
+			}
+		?>
 	</ul>	
 	<h3>Add New Items</h3>
 	<form method="POST" action="todo_list.html">

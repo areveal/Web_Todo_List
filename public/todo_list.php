@@ -40,19 +40,15 @@
 	?>
 </head>
 <body>
+
 	<h1>TODO List</h1>
 	<!--this is all the stuff for the list-->	
 	<?php 
-		
 		$todos = open_file();
 		
 		//remove todos
 		if(!empty($_GET)){
-			foreach ($todos as $key => $todo) {
-			 	if ($_GET['index'] == $key) {
-			 	unset($todos[$key]);
-			 	}
-			 } 
+			unset($todos[$_GET['index']]);
 		}
 		
 		save($todos,'todo_list.txt');

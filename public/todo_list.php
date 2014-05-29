@@ -7,8 +7,20 @@
 	<h1>TODO List</h1>
 	<ul>
 		<?php 
-			var_dump($_POST);	
+			var_dump($_GET);	
 
+			//save the list to a file
+			function save($list, $file) {
+			    //open the file for writing
+			    $write = fopen($file, 'w');
+			    //turn the array into a string
+			    $string = implode("\n", $list);
+			    // write the string onto the file
+			    fwrite($write, $string . "\n");
+			    //close the file
+			    fclose($write);
+			}
+			
 
 			// open in a file
 			function open_file() {
@@ -36,17 +48,34 @@
 			    return $list;
 			}
 
-
 			$todos = open_file();
+
+			if(!empty($_GET)){
+				foreach ($todos as $key => $todo) {
+				 	if (isset($_GET[$key])) {
+				 	unset($todos[$key]);
+				 	}
+				 } 
+			}
+			save($todos,'todo_list.txt');
 
 			if(!empty($_POST)){
 				$todos[] = $_POST['new_items']; 
 			}
-			
-			foreach ($todos as $todo) {
-				echo "<li>$todo</li>\n";
-			}
 
+			print_r($todos);
+
+
+			
+			if(!empty(implode($todos))){
+				echo"<form method='GET' action='todo_list.php'>";
+				
+				foreach ($todos as $key => $todo) {
+					echo "<li><input type='checkbox' name='$key'>$todo</input></li>";
+				}
+				
+				echo "<input type='Submit' value='Mark Complete'></input></form>";
+			}	
 
 
 
@@ -63,18 +92,6 @@
 	</form>
 
 	<?php	
-		//save the list to a file
-		function save($list, $file) {
-		    //open the file for writing
-		    $write = fopen($file, 'w');
-		    //turn the array into a string
-		    $string = implode("\n", $list);
-		    // write the string onto the file
-		    fwrite($write, $string . "\n");
-		    //close the file
-		    fclose($write);
-		}
-		
 		save($todos,'todo_list.txt');
 	?>
 

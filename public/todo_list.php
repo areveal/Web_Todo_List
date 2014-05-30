@@ -50,9 +50,13 @@
 		//remove todos
 		if(!empty($_GET)){
 			if ($_GET['action'] == 'remove'){
+				//remove item at 'index'
 				unset($todos[$_GET['index']]);
+				//reload page
 				header("Location: /todo_list.php");
+				//save 
 				save($todos,'todo_list.txt');
+				//get out!
 				exit(0);
 			}
 		}
@@ -61,9 +65,13 @@
 		
 		//add todos
 		if(!empty($_POST)){
+			//take in new item added
 			$todos[] = $_POST['new_items'];
+			//reload page
 			header("Location: /todo_list.php");
+			//save bc we can
 			save($todos,'todo_list.txt');
+			//no mas
 			exit(0); 
 		}
 
@@ -81,11 +89,14 @@
 			// Move the file from the temp location to our uploads directory
 			move_uploaded_file($_FILES['files']['tmp_name'], $saved_filename);
 		}
-
+		//adds imported files
 		if(isset($saved_filename)){
-			$imported_list = [];	
+			$imported_list = [];
+			//read in file	
 			$imported_list = open_file("uploads/$filename");
+			//add new items to todo list
 			$todos = array_merge($todos, $imported_list);
+			//save
 			save($todos,'todo_list.txt');
 		}
 
@@ -95,6 +106,7 @@
 		//write list
 		if(!empty(implode($todos))){			
 			foreach ($todos as $key => $todo) {
+				//for each todo item, write it out and give it a remove link
 				echo "<li>$todo <a href='todo_list.php?action=remove&index=$key'>Mark Complete</a></li>";
 			}			
 		}
@@ -114,6 +126,13 @@
 		<p>
 			<input type="submit">
 		</p>
+
+	</form>
+	<form style="background:FF0000">
+		<input type="search" placeholder="search">
+		<p>
+			<input type="submit">
+		</p>
 	</form>
 
 	<?php	
@@ -121,7 +140,7 @@
 	?>
 
 	<?php
-
+	//shows the user an error if they try to import anything other than a text file
 	if (isset($_FILES['files']['type']) && $_FILES['files']['type'] != 'text/plain') {
 		echo "<h1 style='color: red'>File must be a text file... You jive turkey!!!</h1>";
 	}
@@ -129,7 +148,7 @@
 
 
 	<h2>File Upload</h2>
-
+	<!--accepts file uplaod input-->
 	<form method="POST" action="/todo_list.php" enctype="multipart/form-data">
 		<label for="file">File to Upload:</label>
 		<input type="file" id="file" name="files">

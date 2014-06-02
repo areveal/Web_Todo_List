@@ -1,4 +1,4 @@
-<?php
+<?
 	
 	$errormessage = '';
 
@@ -86,6 +86,7 @@
 			//save
 			save($todos,'todo_list.txt');
 		} else {
+			//send error message if not a text file
 			$errormessage = "File must be a text file... You jive turkey!!!";		
 		}
 	}
@@ -105,15 +106,14 @@
 	<!--this is all the stuff for the list-->	
 
 	<ul>	
-		<?php	
+		<?	
 			//write list
-			if(!empty(implode($todos))){			
-				foreach ($todos as $key => $todo) {
-					//for each todo item, write it out and give it a remove link
-					echo "<li>$todo <a href='todo_list.php?action=remove&index=$key'>Mark Complete</a></li>";
-				}			
-			}
-		?>
+			if(!empty(implode($todos))):			
+				//for each todo item, write it out and give it a remove link
+				foreach ($todos as $key => $todo):?>
+					<?= "<li>$todo <a href='todo_list.php?action=remove&index=$key'>Mark Complete</a></li>"?>
+				<?endforeach;		
+			endif; ?>
 	</ul>
 			
 	<!--add itmes here-->	
@@ -130,11 +130,10 @@
 
 	<h2>File Upload</h2>
 
-	<?php
-		if(isset($errormessage)) {
-			echo "<h1 style='color:red'>$errormessage</h1>";
-		}
-	?>
+	<?
+		if(isset($errormessage)) : ?>
+			<?= "<h1 style='color:red'>$errormessage</h1>" ?>
+		<? endif; ?>
 
 	<!--accepts file uplaod input-->
 	<form method="POST" action="/todo_list.php" enctype="multipart/form-data">

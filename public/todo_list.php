@@ -111,7 +111,7 @@
 			if(!empty(implode($todos))):			
 				//for each todo item, write it out and give it a remove link
 				foreach ($todos as $key => $todo):?>
-					<?= "<li>$todo <a href='todo_list.php?action=remove&index=$key'>Mark Complete</a></li>"?>
+					<li><?= htmlspecialchars(strip_tags(($todo)))?> <a href='todo_list.php?action=remove&index=$key'>Mark Complete</a></li>
 				<?endforeach;		
 			endif; ?>
 	</ul>

@@ -5,7 +5,7 @@ require_once('filestore.php');
 
 $open = new Filestore('todo_list.txt');
 
-$todos = $open->read_lines();
+$todos = $open->read();
 
 //remove todos
 if(!empty($_GET)){
@@ -15,14 +15,14 @@ if(!empty($_GET)){
 		//reload page
 		header("Location: /todo_list.php");
 		//save 
-		$open->write_lines($todos);
+		$open->write($todos);
 		// save($todos,'todo_list.txt');
 		//get out!
 		exit(0);
 	}
 }
 
-$open->write_lines($todos);	
+$open->write($todos);	
 // save($todos,'todo_list.txt');
 
 //add todos
@@ -32,7 +32,7 @@ if(!empty($_POST)){
 	//reload page
 	header("Location: /todo_list.php");
 	//save bc we can
-	$open->write_lines($todos);
+	$open->write($todos);
 	// save($todos,'todo_list.txt');
 	//no mas
 	exit(0); 
@@ -54,12 +54,12 @@ if (count($_FILES) > 0 && $_FILES['files']['error'] == 0) {
 		//time to import the list
 		$import = new Filestore("uploads/$filename");
 		//read in file
-		$imported_list = $import->read_lines();
+		$imported_list = $import->read();
 		// $imported_list = open_file("uploads/$filename");
 		//add new items to todo list
 		$todos = array_merge($todos, $imported_list);
 		//save
-		$open->write_lines($todos);
+		$open->write($todos);
 		// save($todos,'todo_list.txt');
 	} else {
 		//send error message if not a text file

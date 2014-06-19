@@ -1,5 +1,4 @@
 <?
-
 class Filestore {
 
     public $filename = '';

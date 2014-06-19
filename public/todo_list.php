@@ -78,10 +78,7 @@ if (count($_FILES) > 0 && $_FILES['files']['error'] == 0) {
 </head>
 <body>
 
-<div><div id='solid'>
 	<h1>TODO List</h1>
-	<!--this is all the stuff for the list-->	
-
 	<ul>	
 		<?	
 			//write list
@@ -92,6 +89,8 @@ if (count($_FILES) > 0 && $_FILES['files']['error'] == 0) {
 				<?endforeach;		
 			endif; ?>
 	</ul>	
+	<!--this is all the stuff for the list-->	
+
 			
 	<!--add itmes here-->	
 	<h2>Add New Items</h2>
@@ -120,7 +119,8 @@ if (count($_FILES) > 0 && $_FILES['files']['error'] == 0) {
 			<input class='button' type="submit" value="Upload">
 		</p>
 	</form>	
-</div></div>
+<div>
+</div>
 
 </body>
 </html>

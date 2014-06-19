@@ -7,15 +7,15 @@ div {
 	background-color: white;
 	opacity: .7;
 	width:550px;
-	margin: auto;
+	height: 600px;
 	padding: 40px;
 	box-shadow: 0px 0px 300px white;
+	position: absolute;
+	top: 0px;
+	left: 320px;
+	z-index:-1;
 }
-#solid {
-	opacity: 1;
-	margin: auto;
-	padding: 0px;
-}
+
 h1 {
 	text-decoration: underline;
 	font-size: 40px;
@@ -32,7 +32,6 @@ ul ,form {
 	list-style: circle;
 	color: #720404;
 	border: 1px solid #720404;
-	background-color: #fff;
 	opacity: ;
 	margin: auto;
 	font-weight: bolder;
@@ -95,3 +94,4 @@ a:active {
 #add_item_box {
 	margin-top: 10px;
 }
+

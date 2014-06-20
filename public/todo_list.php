@@ -1,4 +1,5 @@
 <?
+
 	
 $errormessage = '';
 require_once('filestore.php');
@@ -27,6 +28,10 @@ $open->write($todos);
 
 //add todos
 if(!empty($_POST)){
+
+	if(strlen($_POST['new_items']) > 240) {
+		throw new Exception('Dude that was too long. Try a shorter todo item.');
+	}
 	//take in new item added
 	$todos[] = $_POST['new_items'];
 	//reload page

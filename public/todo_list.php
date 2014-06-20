@@ -88,7 +88,7 @@ if (count($_FILES) > 0 && $_FILES['files']['error'] == 0) {
 						<li class="show_up"><?= htmlspecialchars(strip_tags(($todo)))?> <a class="complete"href=<?="?action=remove&index=$key"?>>Mark Complete</a></li>
 					<?endforeach;		
 				endif; 
-			}catch(Exception $e) {
+			}catch(InvalidInputException $e) {
 				echo "We're sorry. The input provided was too long. Please try again.";
 			}
 		?>

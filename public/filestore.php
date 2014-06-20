@@ -1,4 +1,7 @@
 <?
+
+class InvalidInputException extends Exception {}
+
 class Filestore {
 
     public $filename = '';

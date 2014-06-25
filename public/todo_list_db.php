@@ -1,122 +1,27 @@
 <?	
+
+require_once('class_todo.php');
 // Get new instance of PDO object
 $dbc = new PDO('mysql:host=127.0.0.1;dbname=todo_list', 'cole', 'password');
-
 // Tell PDO to throw exceptions on error
 $dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-function getPage() {
-	if(!empty($_GET['page'])) {
-		$page = ($_GET['page']);
-	} else {
-		$page = 1;
-	}
-	return $page;
-}
-
-
-
-function getTodos($dbc) {
-	$page = getPage();
-	$offset = ($page * 10) - 10;
-	$stmt = $dbc->prepare('SELECT * FROM todos LIMIT 10 OFFSET :offset');
-	$stmt->bindValue(':offset',$offset,PDO::PARAM_INT);
-	$stmt->execute();
-	return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-function read_lines($filename)
-{   
-
-    $filesize = filesize($filename);
-    //open file to read
-    $read = fopen($filename, 'r');
-    //read file into string
-    $list_string = trim(fread($read, $filesize));
-    //turn string into array
-    $list = explode("\n", $list_string);
-    //close the file
-    fclose($read);
-
-    return $list;    
-}
-
-$errormessage = '';
-
+//declare database
+$database = new Db($dbc);
 //remove todos
-if(!empty($_POST) && isset($_POST['remove'])){
-
-	//remove item at 'id'
-	$stmt = $dbc->prepare("DELETE FROM todos WHERE id = :id");
-	$stmt->bindValue(':id', $_POST['remove'], PDO::PARAM_STR);
-	$stmt->execute();
-	//reload page
-	header("Location: /todo_list_db.php");
-	exit(0);
-
-}
-
-// save($todos,'todo_list.txt');
-
+$database->removeItem();
 //add todos
-try{
-	if(!empty($_POST) && isset($_POST['new_items'])){
-
-		if(strlen($_POST['new_items']) > 240) {
-			throw new Exception("We're sorry. The input provided was too long. Please try again.");
-		}
-		//take in new item added
-		$stmt = $dbc->prepare("INSERT INTO todos (todo) VALUES (:todo)");
-		$stmt->bindValue(':todo', $_POST['new_items'], PDO::PARAM_STR);
-		$stmt->execute();
-	}
-}catch(Exception $e){
-	$msg = $e->getMessage();
-}
-
-	
-
+$database->addItem();
 // Verify there were uploaded files and no errors
-if (count($_FILES) > 0 && $_FILES['files']['error'] == 0) {
-	if($_FILES['files']['type'] == 'text/plain'){	
-		// Set the destination directory for uploads
-		$upload_dir = '/vagrant/sites/todo.dev/public/uploads/';
-		// Grab the filename from the uploaded file by using basename
-		$filename = basename($_FILES['files']['name'] . time());
-		// Create the saved filename using the file's original name and our upload directory
-		$saved_filename = $upload_dir . $filename;
-		// Move the file from the temp location to our uploads directory
-		move_uploaded_file($_FILES['files']['tmp_name'], $saved_filename);
-		//time to import the list
-		$import = read_lines($saved_filename);
-
-		$stmt = $dbc->prepare("INSERT INTO todos (todo) VALUES (:todo)");
-		foreach ($import as $key => $item) {
-			$stmt->bindValue(':todo', $item, PDO::PARAM_STR);
-			$stmt->execute();
-		}
-
-		//read in file
-		//add new items to todo list
-		//save
-	} else {
-		//send error message if not a text file
-		$errormessage = "File must be a text file... You jive turkey!!!";		
-	}
-}
-
-$todos = getTodos($dbc);
-$page = getPage();
-$stmt = $dbc->query('SELECT * FROM todos');
-$page_num = ceil(($stmt->rowCount())/10);
-
+$database->uploadItem();
+//create todo list from database
+$todos = $database->getTodos();
 
 ?>
 	
 <!DOCTYPE html>
 <html>
 <head>
-	<title>TODO List</title>
+	<title>TODO List DB</title>
 	<!--stylesheet-->
 	<link rel="stylesheet" href="/css/todo_list.css">
 	<!--jquery-->	
@@ -143,20 +48,20 @@ $page_num = ceil(($stmt->rowCount())/10);
 		?>
 	</ul>	
 
-	<span id="pagination">
-		<? if($page != 1): ?>
-			<a href="?page=<?=($page-1)?>">Previous Page</a>
-		<? endif; ?>
-		<? if($page <= $page_num): ?>
-			<a href="?page=<?=($page+1)?>">Next Page</a>
-		<? endif; ?>
-	</span>
+	<div id="pagebox">
+			<? if($database->page != 1): ?>
+				<a href="?page=<?=($database->page-1)?>" class="pagination">Previous Page</a>
+			<? endif; ?>
+			<? if($database->page < $database->page_num): ?>
+				<a href="?page=<?=($database->page+1)?>" class="pagination">Next Page</a>
+			<? endif; ?>
+	</div>
 	<!--add itmes here-->	
 	<h2>Add New Items</h2>
 	
 	<?
-		if(isset($msg)) : ?>
-			<?= "<h2 style='color:red'>$msg</h2>" ?>
+		if(isset($database->msg)) : ?>
+			<?= "<h2 style='color:red'>$database->msg</h2>" ?>
 		<? endif; 
 	?>
 
@@ -171,8 +76,8 @@ $page_num = ceil(($stmt->rowCount())/10);
 	<h2>File Upload</h2>
 
 	<?
-		if(isset($errormessage)) : ?>
-			<?= "<h2 style='color:red'>$errormessage</h2>" ?>
+		if(isset($database->errormessage)) : ?>
+			<?= "<h2 style='color:red'>$database->errormessage</h2>" ?>
 		<? endif; 
 	?>
 
@@ -185,7 +90,7 @@ $page_num = ceil(($stmt->rowCount())/10);
 			<input class='button' type="submit" value="Upload">
 		</p>
 	</form>	
-<div>
+<div id="container">
 </div>
 
 <form id="removeForm" action="todo_list_db.php" method="POST">

@@ -3,7 +3,7 @@ body {
 	background-size: cover;
 	font-family: sans-serif;
 }
-div {
+#container {
 	background-color: white;
 	opacity: .7;
 	width:550px;
@@ -94,8 +94,11 @@ a:active {
 	margin-top: 10px;
 }
 #pagination {
-	position: absolute;
+/*	position: absolute;
 	top: 0px;
-	left: 575px;
+	left: 575px;*/
+	text-align: center;
+	width: 500px
 }
+
 
